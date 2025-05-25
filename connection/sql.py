@@ -3,8 +3,8 @@ import mysql.connector
 # == Connection to MySQL Database default setting ===
 host = 'localhost'
 user = 'root'
-password = '0110936'
-database = 'etf'
+password = ''
+database = ''
 
 
 # == Function to create a connection to the MySQL database ===
