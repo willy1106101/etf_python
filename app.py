@@ -25,6 +25,7 @@ navbar_before_login = [
 navbar_after_login = [
     {"name": "首頁", "url": "/home"},
     {"name": "登出", "url": "/logout"},
+    {"name": "會員個資", "url": "/profile"},
 ]
 
 # === session管理 ===
@@ -89,6 +90,72 @@ def home():
         return redirect("/")
     
     return render_template("home.html", title=web_title, navbar=navbar_after_login, footer=web_footer)
+
+
+# === 會員個資頁面 ===
+@app.route("/profile", methods=["GET"])
+def profile():
+    # 檢查使用者是否已經登入
+    islogged_in = is_logged_in()
+    if not islogged_in:
+        return redirect("/")
+    
+    # 取得使用者資料
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT * FROM users WHERE username = %s", (session['user'],))
+        user = cursor.fetchone()
+
+    if user:
+        return render_template("userprofile.html", title=web_title, navbar=navbar_after_login, footer=web_footer, user=user)
+    else:
+        flash("無法找到使用者資料！", "error")
+        return redirect("/home")
+
+# === 會員個資編輯頁面 ===
+@app.route("/profileEdit", methods=["GET"])
+def profileEdit():
+    # 檢查使用者是否已經登入
+    islogged_in = is_logged_in()
+    if not islogged_in:
+        return redirect("/")
+    
+    # 取得使用者資料
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT * FROM users WHERE username = %s", (session['user'],))
+        user = cursor.fetchone()
+
+    if user:
+        return render_template("userprofileEdit.html", title=web_title, navbar=navbar_after_login, footer=web_footer, user=user)
+    else:
+        flash("無法找到使用者資料！", "error")
+        return redirect("/home")
+
+# === 會員個資編輯處理 ===
+@app.route("/profileEdit", methods=["POST"])
+def profileEditPost():
+    # 檢查使用者是否已經登入
+    islogged_in = is_logged_in()
+    if not islogged_in:
+        return redirect("/")
+
+    # 取得表單資料
+    idcard = request.form.get("idcard")
+    name = request.form.get("name")
+    email = request.form.get("email")
+    birthday = request.form.get("birthday")
+    tel = request.form.get("tel")
+
+    # 更新使用者資料
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            UPDATE users 
+            SET idcard = %s, name= %s, email = %s, birthday = %s, tel = %s 
+            WHERE username = %s
+        """, (idcard, name, email, birthday, tel, session['user']))
+        conn.commit()
+
+    flash("個資更新成功！", "success")
+    return redirect("/profile")
 
 # ======
 app.run(debug=True)
