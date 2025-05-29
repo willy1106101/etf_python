@@ -24,8 +24,9 @@ navbar_before_login = [
 # === navbar選單 登入後 ===
 navbar_after_login = [
     {"name": "首頁", "url": "/home"},
-    {"name": "登出", "url": "/logout"},
+    {"name": "股票管理", "url": "/stock"},
     {"name": "會員個資", "url": "/profile"},
+    {"name": "登出", "url": "/logout"},
 ]
 
 # === session管理 ===
@@ -72,6 +73,50 @@ def do_login():
             flash("登入失敗~請稍後再試!","error")
             return redirect('/')
 
+# === 註冊頁面 ===
+@app.route("/register", methods=["GET"])
+def register():
+    # 檢查使用者是否已經登入
+    islogged_in = is_logged_in()
+    if islogged_in:
+        return redirect("/home")
+    
+    return render_template("register.html", title=web_title, navbar=navbar_before_login, footer=web_footer)
+
+# === 註冊處理 ===
+@app.route("/register", methods=["POST"])
+def do_register():  
+    username = request.form.get("username")
+    password = request.form.get("password")
+    idcard = request.form.get("idcard")
+    name = request.form.get("name")
+    email = request.form.get("email")
+    birthday = request.form.get("birthday")
+    tel = request.form.get("tel")
+
+    # 檢查使用者是否已經存在
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+        existing_user = cursor.fetchone()
+
+    if existing_user:
+        flash("使用者名稱已存在，請選擇其他名稱！", "error")
+        return redirect("/register")
+
+    # 將密碼進行base64編碼
+    password = base64.b64encode(password.encode()).decode() if password else None
+
+    # 新增使用者到資料庫
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            INSERT INTO users (username, password, idcard, name, email, birthday, tel) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (username, password, idcard, name, email, birthday, tel))
+        conn.commit()
+
+    flash("註冊成功！請登入。", "success")
+    return redirect("/")
+
 # === 登出 ===
 @app.route("/logout", methods=["GET"])
 def logout():
@@ -90,7 +135,6 @@ def home():
         return redirect("/")
     
     return render_template("home.html", title=web_title, navbar=navbar_after_login, footer=web_footer)
-
 
 # === 會員個資頁面 ===
 @app.route("/profile", methods=["GET"])
@@ -152,10 +196,32 @@ def profileEditPost():
             SET idcard = %s, name= %s, email = %s, birthday = %s, tel = %s 
             WHERE username = %s
         """, (idcard, name, email, birthday, tel, session['user']))
+
         conn.commit()
 
     flash("個資更新成功！", "success")
     return redirect("/profile")
 
+# === 股票管理頁面 ===
+@app.route("/stock", methods=["GET"])
+def stock():
+    # 檢查使用者是否已經登入
+    islogged_in = is_logged_in()
+    if not islogged_in:
+        return redirect("/")
+    
+    return render_template("stock.html", title=web_title, navbar=navbar_after_login, footer=web_footer)
+
+@app.route("/stockAdd", methods=["GET"])
+def stockAdd():
+    # 檢查使用者是否已經登入
+    islogged_in = is_logged_in()
+    if not islogged_in:
+        return redirect("/")
+
+    return render_template("stockAdd.html", title=web_title, navbar=navbar_after_login, footer=web_footer)
+
 # ======
-app.run(debug=True)
+if __name__ == "__main__":
+    # 啟動Flask應用程式
+    app.run(debug=False)
