@@ -8,6 +8,7 @@
 
 3. 執行主程式
 python app.py
+如需要裝到iis請告知管理員，會教你如何裝。
 
 4. 程式碼連結: https://github.com/willy1106101/etf_python
 5. 資料庫: 
