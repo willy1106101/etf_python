@@ -263,8 +263,8 @@ def stock():
                 merged = merge_dividend_and_price(dividend_data, price_data)
 
             if merged is not None and not merged.empty:
-                latest = merged.sort_values("Ydate", ascending=False).iloc[0]
-                stock['date'] = latest.get('Ydate', '')
+                latest = merged.sort_values("Date", ascending=False).iloc[0]
+                stock['date'] = latest.get('Date', '')
                 stock['dividend'] = latest.get('Dividend', '')
                 stock['closing_price'] = latest.get('Closing Price', '')
                 stock['yield'] = latest.get('Yield', '')
