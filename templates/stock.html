@@ -40,15 +40,32 @@
                 <tr>
                     <th>#</th>
                     <th>名稱</th>
-                    <th>價格</th>
+                    <th>股票代碼</th>
+                    <th>目前價格</th>
+                    <th>買入均格</th>
+                    <th>除息金額</th>
+                    <th>成交價</th>
+                    <th>殖利率</th>
+                    <th>成交日期</th>
+                    <th>動作</th>
                 </tr>
             </thead>
             <tbody>
                 {% for stock in stocks %}
                 <tr>
-                    <td>{{ stock.id }}</td>
-                    <td>{{ stock.name }}</td>
-                    <td>{{ stock.price }}</td>
+                    <td>{{ stock['id'] }}</td>
+                    <td>{{ stock['name'] }}</td>
+                    <td>{{ stock['symbol'] }}</td>
+                    <td>{{ stock['current_price'] }}</td>
+                    <td>{{ stock['purchase_price'] }}</td>
+                    <td>{{ stock['dividend'] if stock['dividend'] else '查無資料' }}</td>
+                    <td>{{ stock['closing_price'] if stock['closing_price'] else '查無資料' }}</td>
+                    <td>{{ stock['yield'] if stock['yield'] else '查無資料' }}</td>
+                    <td>{{ stock['date'] if stock['date'] else '查無資料' }}</td>
+                    <td>
+                       <a href="{{ url_for('stockEdit', id=stock['id']) }}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i> 編輯</a>
+                       <a href="{{ url_for('stockAdd', id=stock['id']) }}" class="btn btn-sm btn-danger" onclick="return confirm('確定要刪除嗎？');"><i class="bi bi-trash"></i> 刪除</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

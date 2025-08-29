@@ -40,80 +40,82 @@
     <div class="p-5 text-center bg-light">
         <h1 class="mb-3">目前購買的股票</h1>
         <p class="mb-4">查看您目前持有的股票清單與投資概況。</p>
-        <a href="#stock-list" class="btn btn-primary btn-lg">查看詳情</a>
+        <a href="/stock" class="btn btn-primary btn-lg">查看詳情</a>
     </div>
 
     <!-- 漲跌股票 -->
     <div class="container my-5">
         <h2 class="text-center mb-4">漲跌股票</h2>
-        <div class="row row-cols-1 row-cols-md-2 g-4">
-            <!-- 卡片1 -->
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for tickers in info_stock %}
             <div class="col">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title">台積電 (2330)</h5>
-                        <p class="card-text">今日漲幅：+1.23%</p>
-                        <p class="card-text">目前價格：600 元</p>
+                        <h5 class="card-title">{{ tickers.name }} ({{ tickers.code }})</h5>
+                        <p class="card-text">
+                            價格: {{ tickers.price }} 元
+                            漲幅: <a class="{{ tickers.color }} text-decoration-none">{{ tickers.sign }}</a> {{ tickers.change }}%
+                        </p>
+                        <p class="card-text">
+                            今日開盤: {{ tickers.open }} 元
+                            前日收盤: {{ tickers.previous_close }} 元
+                        </p>
                     </div>
                 </div>
             </div>
-            <!-- 卡片2 -->
-            <div class="col">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">聯發科 (2454)</h5>
-                        <p class="card-text">今日跌幅：-0.85%</p>
-                        <p class="card-text">目前價格：800 元</p>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
+
 
     <!-- 熱門ETF推薦 -->
     <div class="container my-5">
-        <h2 class="text-center mb-4">熱門ETF推薦</h2>
+        <h2 class="text-center mb-4">熱門ETF推薦TOP 5</h2>
         <div class="row row-cols-1 row-cols-md-3 g-4">
-            <!-- 卡片1 -->
+            {% for ticker in hot_etfs %}
             <div class="col">
                 <div class="card h-100">
-                    <img src="https://via.placeholder.com/400x200?text=ETF1" class="card-img-top" alt="ETF1">
                     <div class="card-body">
-                        <h5 class="card-title">元大台灣50 (0050)</h5>
-                        <p class="card-text">追蹤台灣前50大市值公司，適合長期投資。</p>
+                        <h5 class="card-title">{{ ticker.name }} ({{ ticker.ticker }})</h5>
+                        <p class="card-text">
+                            年化報酬率: {{ ticker.perf['年化報酬率(%)'] }} %<br>
+                            波動率: {{ ticker.perf['波動率(%)'] }} %<br>
+                            Sharpe比率: {{ ticker.perf['Sharpe比率'] }}<br>
+                            最大回撤: {{ ticker.perf['最大回撤(%)'] }} %<br>
+                            損益率: {{ ticker.perf['損益率(%)'] }} %
+                        </p>
                     </div>
                 </div>
             </div>
-            <!-- 卡片2 -->
-            <div class="col">
-                <div class="card h-100">
-                    <img src="https://via.placeholder.com/400x200?text=ETF2" class="card-img-top" alt="ETF2">
-                    <div class="card-body">
-                        <h5 class="card-title">國泰永續高股息 (00878)</h5>
-                        <p class="card-text">高股息ETF，適合尋求穩定現金流的投資人。</p>
-                    </div>
-                </div>
-            </div>
-            <!-- 卡片3 -->
-            <div class="col">
-                <div class="card h-100">
-                    <img src="https://via.placeholder.com/400x200?text=ETF3" class="card-img-top" alt="ETF3">
-                    <div class="card-body">
-                        <h5 class="card-title">富邦科技 (0052)</h5>
-                        <p class="card-text">專注科技產業，抓住成長趨勢。</p>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 
-    <!-- 最新市場動態 -->
+    <!-- 查詢除息率 -->
     <div class="container my-5">
-        <h2 class="text-center mb-4">最新市場動態</h2>
+        <h2 class="text-center mb-4">查詢除息率</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <!-- 卡片1 -->
+            {% for ticker in tickers %}
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ticker[1]}}({{ticker[3]}})</h5>
+                        <p class="card-text"><a class="text-decoration-none" href="ysearch?ticker={{ticker[2]}}">查詢{{ticker[1]}}-{{ticker[2]}}除息率</a></p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 新聞 -->
+    <div class="container my-5">
+        <h2 class="text-center mb-4">新聞</h2>
         <ul class="list-group">
-            <li class="list-group-item">台股今日收漲 100 點，電子股表現強勁。</li>
-            <li class="list-group-item">美國科技股全面上漲，帶動亞洲股市氣氛。</li>
-            <li class="list-group-item">元大台灣50 ETF 最新資金流入創新高。</li>
+            {% for news in fetch_new %}
+                <li class="list-group-item"><a href="{{ news['link'] }}" class="text-decoration-none text-dark">{{ news['title'] }}</a></li>
+            {% endfor %}
         </ul>
     </div>
     <!-- container end -->
