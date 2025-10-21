@@ -43,6 +43,7 @@
         <a href="/stock" class="btn btn-primary btn-lg">查看詳情</a>
     </div>
 
+    <!-- todo: 將價格、等等顯示出來，不要顯示 -  -->
     <!-- 漲跌股票 -->
     <div class="container my-5">
         <h2 class="text-center mb-4">漲跌股票</h2>
@@ -67,10 +68,10 @@
         </div>
     </div>
 
-
+    <!-- todo: 將此加入到資料庫~ -->
     <!-- 熱門ETF推薦 -->
     <div class="container my-5">
-        <h2 class="text-center mb-4">熱門ETF推薦TOP 5</h2>
+        <h2 class="text-center mb-4">熱門ETF推薦</h2>
         <div class="row row-cols-1 row-cols-md-3 g-4">
             {% for ticker in hot_etfs %}
             <div class="col">
@@ -91,6 +92,7 @@
         </div>
     </div>
 
+    <!-- todo: 改成其他的東西 -->
     <!-- 查詢除息率 -->
     <div class="container my-5">
         <h2 class="text-center mb-4">查詢除息率</h2>
@@ -109,15 +111,7 @@
         </div>
     </div>
 
-    <!-- 新聞 -->
-    <div class="container my-5">
-        <h2 class="text-center mb-4">新聞</h2>
-        <ul class="list-group">
-            {% for news in fetch_new %}
-                <li class="list-group-item"><a href="{{ news['link'] }}" class="text-decoration-none text-dark">{{ news['title'] }}</a></li>
-            {% endfor %}
-        </ul>
-    </div>
+
     <!-- container end -->
     <!-- footer start -->
     <footer class="mt-3 bg-light fixed-bottom">

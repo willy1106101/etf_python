@@ -46,7 +46,7 @@
                     <div class="card-body p-4">
                         <!-- 標題，置中、底部留白、藍色字 -->
                         <h2 class="text-center mb-4 text-primary">編輯股票</h2>
-                        <form action="{{ url_for('stockEdit', id=stock['id']) }}" method="POST">
+                        <form action="{{ url_for('stock.stock_edit', id=stock['id']) }}" method="POST">
                             <div class="mb-3">
                                 <label class="form-label">股票名稱</label>
                                 <input type="text" class="form-control" name="Name" value="{{ stock['name'] }}"
@@ -73,7 +73,7 @@
                                     value="{{ stock['current_price'] }}" required min="0">
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
-                                <a href="{{ url_for('stock') }}" class="btn btn-outline-danger">返回</a>
+                                <a href="{{ url_for('stock.stock_list') }}" class="btn btn-outline-danger">返回</a>
                                 <button type="submit" class="btn btn-success btn-lg">儲存變更</button>
                             </div>
                         </form>

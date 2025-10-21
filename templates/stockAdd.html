@@ -43,7 +43,7 @@
                     <div class="card-body p-4">
                         <!-- 標題，置中、底部留白、藍色字 -->
                         <h2 class="text-center mb-4 text-primary">新增多筆股票</h2>
-                        <form id="multiStockForm" action="stockAdd" method="POST">
+                        <form id="multiStockForm" action="{{ url_for('stock.stock_add') }}" method="POST">
                             <!-- 股票輸入區塊的容器，之後會動態新增內容 -->
                             <div id="stockList">
                                 <!-- 單筆股票輸入區塊（可複製） -->
@@ -86,7 +86,7 @@
                                 <!-- 新增一筆按鈕，點擊會複製一個輸入區塊 -->
                                 <button type="button" class="btn btn-outline-primary" id="addStockBtn">＋ 新增一筆</button>
 
-                                <a href="stock" class="btn btn-outline-danger">返回</a>
+                                <a href="{{ url_for('stock.stock_list') }}" class="btn btn-outline-danger">返回</a>
 
                                 <!-- 送出全部按鈕，送出所有股票資料 -->
                                 <button type="submit" class="btn btn-success btn-lg">送出全部</button>
